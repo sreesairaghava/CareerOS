@@ -9,28 +9,18 @@
 import SwiftUI
 
 struct RootView: View {
-    
     @State private var selectedTab: AppTab = .dashboard
-    
     var body: some View {
         TabView(selection: $selectedTab) {
+
+            Tab("Dashboard", systemImage: AppTab.dashboard.systemImage, value: AppTab.dashboard) {
+                DashboardView()
+            }
             
-            DashboardView()
-                .tabItem {
-                    Label(
-                        AppTab.dashboard.title,
-                        systemImage: AppTab.dashboard.systemImage
-                    )
-                }
-                .tag(AppTab.dashboard)
-            Text("Applications")
-                .tabItem {
-                    Label(
-                        AppTab.applications.title,
-                        systemImage: AppTab.applications.systemImage
-                    )
-                }
-                .tag(AppTab.applications)
+            Tab("Companies", systemImage: AppTab.companies.systemImage, value: AppTab.companies) {
+                CompaniesView()
+            }
+            
         }
     }
 }
