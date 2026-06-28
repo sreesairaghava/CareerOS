@@ -14,4 +14,6 @@ final class MockCompanyRepository: CompanyRepository {
     func saveCompany(_ company: Company) throws {}
     
     func deleteCompany(withID id: UUID) throws {}
+    
+    func updateCompany(_ company: Company) throws {}
 }

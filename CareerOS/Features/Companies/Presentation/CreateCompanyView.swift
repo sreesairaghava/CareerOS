@@ -10,16 +10,52 @@ import SwiftUI
 
 struct CreateCompanyView: View {
 
-    let repository: CompanyRepository
+    let viewModel: CompaniesViewModel
 
     @Environment(\.dismiss)
     private var dismiss
 
     @State
     private var companyName = ""
+    
+    @State
+    private var websiteURLText = ""
 
     @State
     private var selectedIndustry: CompanyIndustry = .technology
+    
+    private var trimmedCompanyName: String {
+
+        companyName
+            .trimmingCharacters(
+                in: .whitespacesAndNewlines
+            )
+    }
+
+    private var websiteURL: URL? {
+
+        let trimmedWebsite = websiteURLText
+            .trimmingCharacters(
+                in: .whitespacesAndNewlines
+            )
+
+        guard !trimmedWebsite.isEmpty else {
+            return nil
+        }
+
+        let normalizedWebsite = trimmedWebsite.contains("://")
+        ? trimmedWebsite
+        : "https://\(trimmedWebsite)"
+
+        return URL(
+            string: normalizedWebsite
+        )
+    }
+
+    private var canSave: Bool {
+
+        !trimmedCompanyName.isEmpty
+    }
 
     var body: some View {
 
@@ -33,6 +69,17 @@ struct CreateCompanyView: View {
                         "Company Name",
                         text: $companyName
                     )
+                }
+                
+                Section("Website") {
+
+                    TextField(
+                        "apple.com",
+                        text: $websiteURLText
+                    )
+                    .keyboardType(.URL)
+                    .textInputAutocapitalization(.never)
+                    .autocorrectionDisabled()
                 }
 
                 Section("Industry") {
@@ -74,13 +121,7 @@ struct CreateCompanyView: View {
                     Button("Save") {
                         saveCompany()
                     }
-                    .disabled(
-                        companyName
-                            .trimmingCharacters(
-                                in: .whitespacesAndNewlines
-                            )
-                            .isEmpty
-                    )
+                    .disabled(!canSave)
                 }
             }
         }
@@ -88,22 +129,14 @@ struct CreateCompanyView: View {
 
     private func saveCompany() {
 
-        let company = CompanyFactory.create(
-            name: companyName,
+        let didSave = viewModel.createCompany(
+            name: trimmedCompanyName,
+            websiteURL: websiteURL,
             industry: selectedIndustry
         )
 
-        do {
-
-            try repository.saveCompany(
-                company
-            )
-
+        if didSave {
             dismiss()
-
-        } catch {
-
-            print(error)
         }
     }
 }

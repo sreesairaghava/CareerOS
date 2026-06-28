@@ -13,6 +13,10 @@ protocol CompanyRepository {
     func fetchCompanies() throws -> [Company]
 
     func saveCompany(_ company: Company) throws
+    
+    func updateCompany(
+        _ company: Company
+    ) throws
 
     func deleteCompany(
         withID id: UUID

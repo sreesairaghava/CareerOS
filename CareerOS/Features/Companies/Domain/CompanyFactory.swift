@@ -12,6 +12,7 @@ enum CompanyFactory {
 
     static func create(
         name: String,
+        websiteURL: URL? = nil,
         industry: CompanyIndustry
     ) -> Company {
 
@@ -20,7 +21,7 @@ enum CompanyFactory {
         return Company(
             id: UUID(),
             name: name,
-            websiteURL: nil,
+            websiteURL: websiteURL,
             industry: industry,
             createdAt: now,
             updatedAt: now

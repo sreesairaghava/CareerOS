@@ -35,6 +35,30 @@ final class SwiftDataCompanyRepository: CompanyRepository {
             CompanyMapper.toDomain(from: $0)
         }
     }
+    
+    func updateCompany(
+        _ company: Company
+    ) throws {
+
+        let descriptor = FetchDescriptor<CompanyEntity>()
+
+        let entities = try modelContext.fetch(
+            descriptor
+        )
+
+        guard let entity = entities.first(
+            where: { $0.id == company.id }
+        ) else {
+            return
+        }
+
+        entity.name = company.name
+        entity.websiteURL = company.websiteURL?.absoluteString
+        entity.industry = company.industry.rawValue
+        entity.updatedAt = company.updatedAt
+
+        try modelContext.save()
+    }
 
     func saveCompany(
         _ company: Company
